@@ -15,17 +15,20 @@ namespace RabbitWarrenApi.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] AdoptionRequestCreateDto dto)
         {
+            Guard.Against.NullOrEmpty(dto.AdopterName, nameof(dto.AdopterName));
+            Guard.Against.NullOrEmpty(dto.Phone, nameof(dto.Phone));
+            
             var id = Guid.NewGuid();
             var request = new AdoptionRequest(
                 id,
                 dto.AdopterName,
                 dto.ContactEmail,
                 dto.Phone,
-                dto.PreferredSize,
-                dto.PreferredColor,
-                dto.PreferredAge,
-                dto.Priority ?? "normal",
-                "Pending");
+                dto.PreferredSize ?? PreferredSize.NoPreference,
+                dto.PreferredColor ?? PreferredColor.NoPreference,
+                dto.PreferredAge ?? PreferredAge.NoPreference,
+                dto.Priority ?? Priority.Normal,
+                AdoptionStatus.Pending);
 
             Store[id] = request;
 

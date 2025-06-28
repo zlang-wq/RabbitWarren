@@ -1,4 +1,5 @@
-using System.Collections.Generic;
+using RabbitWarrenApi.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
-
+builder.Services.AddDbContext<RabbitWarrenContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("RabbitWarrenDb")));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -19,5 +21,12 @@ if (app.Environment.IsDevelopment())
 
 // Map attribute-routed controllers
 app.MapControllers();
+
+// Ensure DB exists
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<RabbitWarrenContext>();
+    db.Database.EnsureCreated();
+}
 
 app.Run();

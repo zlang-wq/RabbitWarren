@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace RabbitWarrenApi.Models;
 
 /// <summary>
@@ -8,8 +10,8 @@ public record AdoptionRequest(
     string AdopterName,
     string ContactEmail,
     string Phone,
-    string? PreferredSize,
-    string? PreferredColor,
-    string? PreferredAge,
-    string? Priority,
-    string Status); 
+    PreferredSize PreferredSize,
+    PreferredColor PreferredColor,
+    PreferredAge PreferredAge,
+    Priority Priority,
+    AdoptionStatus Status); 

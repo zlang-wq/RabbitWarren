@@ -1,4 +1,8 @@
-namespace RabbitWarrenApi.Models;
+using RabbitWarrenApi.Models;
+
+#nullable enable
+
+namespace RabbitWarrenApi.DTOs;
 
 /// <summary>
 /// DTO for submitting a new adoption request.
@@ -7,7 +11,7 @@ public record AdoptionRequestCreateDto(
     string AdopterName,
     string ContactEmail,
     string Phone,
-    string? PreferredSize,
-    string? PreferredColor,
-    string? PreferredAge,
-    string? Priority); 
+    PreferredSize? PreferredSize,
+    PreferredColor? PreferredColor,
+    PreferredAge? PreferredAge,
+    Priority? Priority); 
