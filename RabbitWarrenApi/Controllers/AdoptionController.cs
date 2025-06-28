@@ -1,4 +1,7 @@
+using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Mvc;
+using RabbitWarrenApi.Data;
+using RabbitWarrenApi.DTOs;
 using RabbitWarrenApi.Models;
 
 namespace RabbitWarrenApi.Controllers
@@ -7,7 +10,12 @@ namespace RabbitWarrenApi.Controllers
     [Route("api/[controller]")]
     public class AdoptionController : ControllerBase
     {
-        private static readonly Dictionary<Guid, AdoptionRequest> Store = new();
+        private readonly RabbitWarrenContext _context;
+
+        public AdoptionController(RabbitWarrenContext context)
+        {
+            _context = context;
+        }
 
         /// <summary>
         /// Submit a new rabbit adoption request.
@@ -30,7 +38,8 @@ namespace RabbitWarrenApi.Controllers
                 dto.Priority ?? Priority.Normal,
                 AdoptionStatus.Pending);
 
-            Store[id] = request;
+            _context.AdoptionRequests.Add(request);
+            _context.SaveChanges();
 
             return CreatedAtAction(nameof(GetById), new { id }, new { id });
         }
@@ -41,7 +50,8 @@ namespace RabbitWarrenApi.Controllers
         [HttpGet("{id}")]
         public IActionResult GetById(Guid id)
         {
-            return Store.TryGetValue(id, out var request) ? Ok(request) : NotFound();
+            var request = _context.AdoptionRequests.Find(id);
+            return request is not null ? Ok(request) : NotFound();
         }        
     }
 } 
